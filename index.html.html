@@ -14,13 +14,11 @@
     color: #ffffff;
     overflow-x: hidden;
   }
-
   @keyframes gradientBG {
     0% {background-position: 0% 50%;}
     50% {background-position: 100% 50%;}
     100% {background-position: 0% 50%;}
   }
-
   .container { max-width: 420px; margin: auto; padding: 20px 16px 40px; }
 
   /* Top sticky tab */
@@ -48,9 +46,9 @@
   .dropdown .option { padding: 8px 12px; font-size: 12px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 6px; }
   .dropdown .option:hover { background: #5a189a; }
 
-  /* Category & subcategory grid - card style */
-  .category-grid, .subcategory-grid, .items-list { display: grid; gap: 12px; margin-top: 16px; }
-  .category, .subcategory {
+  /* Category & items grid */
+  .category-grid, .items-list { display: grid; gap: 12px; margin-top: 16px; }
+  .category {
     background: linear-gradient(135deg, #5a189a, #ff6ec7);
     text-align: center;
     padding: 18px;
@@ -60,27 +58,17 @@
     box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     transition: transform 0.3s, box-shadow 0.3s;
     position: relative;
-    overflow: hidden;
   }
-  .category:hover, .subcategory:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 12px 25px rgba(0,0,0,0.6); }
+  .category:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 12px 25px rgba(0,0,0,0.6); }
 
   .back-button {
     background: #1f0033; border: 1px solid #c77dff; color: #fff; border-radius: 14px;
     padding: 8px 14px; font-size: 14px; cursor: pointer; margin-bottom: 12px; display: inline-block;
   }
 
-  /* Instruction text with pulse */
-  .instruction { text-align: center; color: #ffd6ff; font-size: 13px; margin-top: 12px; font-style: italic;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100% {opacity:1;}
-    50% {opacity:0.6;}
-  }
+  .instruction { text-align: center; color: #ffd6ff; font-size: 13px; margin-top: 12px; font-style: italic; }
 
-  /* Items list with black background */
   .items-list { background: rgba(0,0,0,0.85); padding: 12px; border-radius: 12px; }
-
   .item { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dotted #5a189a; font-size: 15px; }
   .item-name { flex: 1; }
   .price { color: #ffd6ff; min-width: 80px; text-align: right; }
@@ -122,26 +110,11 @@
   </div>
 
   <!-- Home Categories -->
-  <div id="home" class="category-grid">
-    <div class="category" data-en="Beverages" data-de="Getränke" data-mk="Напитоци" data-al="Pije" onclick="showSubcategories('beverages')">🍸 Beverages</div>
-    <div class="category" data-en="Shisha" data-de="Shisha" data-mk="Шиша" data-al="Shisha" onclick="showItems('shishaflavours', 'shisha')">💨 Shisha</div>
-    <div class="instruction">Press the button when you're ready to order</div>
-  </div>
+  <div id="home" class="category-grid"></div>
 
-  <!-- Subcategories -->
-  <div id="beverages" class="subcategory-grid" style="display:none;">
-    <button class="back-button" onclick="goHome()">← Back</button>
-    <div class="subcategory" data-en="Drinks" data-de="Getränke" data-mk="Напитоци" data-al="Pije" onclick="showItems('drinks', 'beverages')">🥤 Drinks</div>
-    <div class="subcategory" data-en="Beer" data-de="Bier" data-mk="Пиво" data-al="Birra" onclick="showItems('beer', 'beverages')">🍺 Beer</div>
-    <div class="subcategory" data-en="Whiskey & Bourbon" data-de="Whiskey & Bourbon" data-mk="Виски & Бурбон" data-al="Whiskey & Bourbon" onclick="showItems('whiskey', 'beverages')">🥃 Whiskey & Bourbon</div>
-    <div class="subcategory" data-en="Spirits" data-de="Spirituosen" data-mk="Жестоки пијалаци" data-al="Spirit" onclick="showItems('spirits', 'beverages')">🍸 Spirits</div>
-    <div class="subcategory" data-en="Cocktails" data-de="Cocktails" data-mk="Коктели" data-al="Cocktails" onclick="showItems('cocktails', 'beverages')">🍹 Cocktails</div>
-    <div class="instruction">Press the button when you're ready to order</div>
-  </div>
-
-  <!-- Items -->
+  <!-- Items List -->
   <div id="items" class="items-list" style="display:none;">
-    <button class="back-button" onclick="goBack()">← Back</button>
+    <button class="back-button" onclick="goHome()">← Back</button>
     <div id="items-container"></div>
     <div class="instruction">Press the button when you're ready to order</div>
   </div>
@@ -149,122 +122,162 @@
 </div>
 
 <script>
-let currentCategory = '';
-let currentSubcategory = '';
+const home = document.getElementById('home');
+const itemsContainer = document.getElementById('items-container');
+
 let currentLang = 'en';
 let currentCurrency = 'mkd';
+let currentCategory = '';
 
-const langDropdown = document.getElementById('langDropdown');
-const selectedLangBtn = document.getElementById('selected-lang');
-const currencyDropdown = document.getElementById('currencyDropdown');
-const selectedCurrencyBtn = document.getElementById('selected-currency');
+// MKD to EUR conversion
+const MKD_TO_EUR = 61;
+
+// Menu data with translations and prices
+const menuData = {
+  Beer: [
+    {en:"Skopsko", de:"Skopsko", mk:"Скопско", al:"Skopsko", price:300},
+    {en:"Tuborg", de:"Tuborg", mk:"Туборг", al:"Tuborg", price:300},
+    {en:"Heineken", de:"Heineken", mk:"Хајнекен", al:"Heineken", price:400},
+    {en:"Corona", de:"Corona", mk:"Корона", al:"Corona", price:400}
+  ],
+  Whiskey: [
+    {en:"Jack Daniels", de:"Jack Daniels", mk:"Џек Денјелс", al:"Jack Daniels", bottle:500, liter:12000},
+    {en:"Chivas Regal", de:"Chivas Regal", mk:"Чивас Ригал", al:"Chivas Regal", bottle:500, liter:12000},
+    {en:"Jim Beam", de:"Jim Beam", mk:"Џим Бим", al:"Jim Beam", bottle:400, liter:12000},
+    {en:"Ballentines", de:"Ballentines", mk:"Балентинс", al:"Ballentines", bottle:400, liter:12000},
+    {en:"Jameson", de:"Jameson", mk:"Џемсон", al:"Jameson", bottle:400, liter:12000},
+    {en:"Stock", de:"Stock", mk:"Сток", al:"Stock", bottle:400, liter:12000},
+    {en:"Red Label", de:"Red Label", mk:"Ред Лейбл", al:"Red Label", price:15000},
+    {en:"Blue Label", de:"Blue Label", mk:"Блу Лейбл", al:"Blue Label", price:61000},
+    {en:"Badel Brendi", de:"Badel Brendi", mk:"Бадел Бренди", al:"Badel Brendi", bottle:400, liter:12000}
+  ],
+  Liquer: [
+    {en:"Beylis", de:"Beylis", mk:"Бејлис", al:"Beylis", bottle:400, liter:12000},
+    {en:"Malibu", de:"Malibu", mk:"Малибу", al:"Malibu", bottle:400, liter:12000},
+    {en:"Jeggermeister", de:"Jeggermeister", mk:"Јегермајстер", al:"Jeggermeister", bottle:400, liter:12000}
+  ],
+  WhiteSpirits: [
+    {en:"Smirnoff Ice", de:"Smirnoff Ice", mk:"Смирноф Ајс", al:"Smirnoff Ice", price:400},
+    {en:"Smirnoff", de:"Smirnoff", mk:"Смирноф", al:"Smirnoff", bottle:500, liter:12000},
+    {en:"Vigor", de:"Vigor", mk:"Вигор", al:"Vigor", bottle:500, liter:12000},
+    {en:"Grey Goose", de:"Grey Goose", mk:"Греј Гус", al:"Grey Goose", liter:24000},
+    {en:"Belvedere", de:"Belvedere", mk:"Белведере", al:"Belvedere", liter:30000},
+    {en:"Bacardi", de:"Bacardi", mk:"Бакарди", al:"Bacardi", bottle:500, liter:12000},
+    {en:"Bombay", de:"Bombay", mk:"Бомбеј", al:"Bombay", bottle:500, liter:12000},
+    {en:"Gin Sax", de:"Gin Sax", mk:"Џин Сакс", al:"Gin Sax", bottle:500, liter:12000}
+  ],
+  Shots: [
+    {en:"Tequila", de:"Tequila", mk:"Текила", al:"Tequila", bottle:250, liter:12000},
+    {en:"Bomb 69", de:"Bomb 69", mk:"Бомб 69", al:"Bomb 69", price:400},
+    {en:"Alien Brain", de:"Alien Brain", mk:"Алиен Бреин", al:"Alien Brain", price:400}
+  ],
+  Champagne: [
+    {en:"Romer", de:"Romer", mk:"Ромер", al:"Romer", liter:12000},
+    {en:"Moet", de:"Moet", mk:"Моет", al:"Moet", liter:24000}
+  ],
+  Wines: [
+    {en:"Alexandria Red Dry 0.75L", de:"Alexandria Red Dry", mk:"Александрија Црвено Сухо", al:"Alexandria Red Dry", bottle:400, liter:6000},
+    {en:"Alexandria White Dry 0.75L", de:"Alexandria White Dry", mk:"Александрија Бело Сухо", al:"Alexandria White Dry", bottle:400, liter:6000}
+  ],
+  SoftDrinks: [
+    {en:"Water", de:"Wasser", mk:"Вода", al:"Water", price:300},
+    {en:"Cola", de:"Cola", mk:"Кола", al:"Cola", price:300},
+    {en:"Fanta", de:"Fanta", mk:"Фанта", al:"Fanta", price:300},
+    {en:"Schwepps", de:"Schwepps", mk:"Швепс", al:"Schwepps", price:300},
+    {en:"Ice Tea", de:"Eistee", mk:"Леден Чај", al:"Ice Tea", price:300},
+    {en:"Orange Juice", de:"Orangensaft", mk:"Сок од Портокал", al:"Orange Juice", price:300},
+    {en:"Red Bull", de:"Red Bull", mk:"Ред Бул", al:"Red Bull", price:500},
+    {en:"Sour Cherry", de:"Sauerkirsche", mk:"Вишна", al:"Sour Cherry", price:300},
+    {en:"Apple", de:"Apfel", mk:"Јаболко", al:"Apple", price:300},
+    {en:"Orange Juice", de:"Orangensaft", mk:"Портокалов Сок", al:"Orange Juice", price:300}
+  ]
+};
+
+// Populate home categories
+Object.keys(menuData).forEach(cat=>{
+  const div = document.createElement('div');
+  div.className='category';
+  div.textContent=cat;
+  div.addEventListener('click', ()=>showItems(cat));
+  home.appendChild(div);
+});
+
+// Helper to round EUR prices
+function roundEUR(value){ return Math.ceil(value/10)*10; }
+
+function showItems(category){
+  currentCategory = category;
+  home.style.display='none';
+  document.getElementById('items').style.display='block';
+  itemsContainer.innerHTML='';
+
+  // Sort items by price (bottle price or liter or price)
+  const sortedItems = menuData[category].slice().sort((a,b)=>{
+    const priceA = a.price || a.bottle || a.liter || 0;
+    const priceB = b.price || b.bottle || b.liter || 0;
+    return priceA - priceB;
+  });
+
+  sortedItems.forEach(item=>{
+    let priceText='';
+    if(item.bottle && item.liter){
+      if(currentCurrency==='mkd'){
+        priceText = `${item.bottle} / 1L: ${item.liter} MKD`;
+      } else {
+        priceText = `${roundEUR(item.bottle/MKD_TO_EUR)} / 1L: ${roundEUR(item.liter/MKD_TO_EUR)} €`;
+      }
+    } else if(item.bottle){
+      priceText = currentCurrency==='mkd'? `${item.bottle} MKD` : `${roundEUR(item.bottle/MKD_TO_EUR)} €`;
+    } else if(item.liter){
+      priceText = currentCurrency==='mkd'? `1L: ${item.liter} MKD` : `1L: ${roundEUR(item.liter/MKD_TO_EUR)} €`;
+    } else if(item.price){
+      priceText = currentCurrency==='mkd'? `${item.price} MKD` : `${roundEUR(item.price/MKD_TO_EUR)} €`;
+    }
+    const div=document.createElement('div');
+    div.className='item';
+    div.innerHTML=`<span class="item-name">${item[currentLang]}</span><span class="price">${priceText}</span>`;
+    itemsContainer.appendChild(div);
+  });
+}
+
+function goHome(){
+  home.style.display='grid';
+  document.getElementById('items').style.display='none';
+}
 
 // Language dropdown
-selectedLangBtn.addEventListener('click', ()=>{langDropdown.querySelector('.options').style.display = langDropdown.querySelector('.options').style.display==='block'?'none':'block';});
+const langDropdown = document.getElementById('langDropdown');
+const selectedLangBtn = document.getElementById('selected-lang');
+selectedLangBtn.addEventListener('click', ()=>{
+  const opt = langDropdown.querySelector('.options');
+  opt.style.display = opt.style.display==='block'?'none':'block';
+});
 langDropdown.querySelectorAll('.option').forEach(opt=>{
   opt.addEventListener('click', ()=>{
     currentLang = opt.dataset.lang;
     selectedLangBtn.textContent = opt.textContent;
-    langDropdown.querySelector('.options').style.display = 'none';
-    translateMenu();
+    langDropdown.querySelector('.options').style.display='none';
+    // Refresh current items
+    if(currentCategory) showItems(currentCategory);
   });
 });
 
 // Currency dropdown
-selectedCurrencyBtn.addEventListener('click', ()=>{currencyDropdown.querySelector('.options').style.display = currencyDropdown.querySelector('.options').style.display==='block'?'none':'block';});
+const currencyDropdown = document.getElementById('currencyDropdown');
+const selectedCurrencyBtn = document.getElementById('selected-currency');
+selectedCurrencyBtn.addEventListener('click', ()=>{
+  const opt = currencyDropdown.querySelector('.options');
+  opt.style.display = opt.style.display==='block'?'none':'block';
+});
 currencyDropdown.querySelectorAll('.option').forEach(opt=>{
   opt.addEventListener('click', ()=>{
     currentCurrency = opt.dataset.currency;
     selectedCurrencyBtn.textContent = opt.textContent + " ▼";
-    currencyDropdown.querySelector('.options').style.display = 'none';
-    if(currentSubcategory) showItems(currentSubcategory, currentCategory);
+    currencyDropdown.querySelector('.options').style.display='none';
+    if(currentCategory) showItems(currentCategory);
   });
 });
 
-// Translate menu
-function translateMenu(){
-  document.querySelectorAll('.category, .subcategory').forEach(el=>{ el.textContent = el.dataset[currentLang]; });
-  document.querySelectorAll('.item-name').forEach(el=>{ el.textContent = el.dataset[currentLang]; });
-}
-
-const MKD_TO_EUR = 61;
-
-const data = {
-  beverages: {
-    drinks: [
-      {en:"Coca-Cola", de:"Coca-Cola", mk:"Кока-Кола", al:"Coca-Cola", price:"300 MKD"},
-      {en:"Fanta", de:"Fanta", mk:"Фанта", al:"Fanta", price:"300 MKD"},
-      {en:"Schweppes", de:"Schweppes", mk:"Швепс", al:"Schweppes", price:"300 MKD"},
-      {en:"Ice Tea", de:"Eistee", mk:"Леден Чај", al:"Ice Tea", price:"300 MKD"},
-      {en:"Orange Juice", de:"Orangensaft", mk:"Сок од Портокал", al:"Orange Juice", price:"300 MKD"},
-      {en:"Red Bull", de:"Red Bull", mk:"Ред Бул", al:"Red Bull", price:"400 MKD"},
-    ],
-    beer: [
-      {en:"Tuborg", de:"Tuborg", mk:"Туборг", al:"Tuborg", price:"300 MKD"},
-      {en:"Skopsko", de:"Skopsko", mk:"Скопско", al:"Skopsko", price:"300 MKD"},
-      {en:"Heineken", de:"Heineken", mk:"Хајнекен", al:"Heineken", price:"300 MKD"},
-      {en:"Corona", de:"Corona", mk:"Корона", al:"Corona", price:"400 MKD"},
-    ],
-    whiskey: [
-      {en:"Jack Daniels", de:"Jack Daniels", mk:"Џек Денјелс", al:"Jack Daniels", price:"500 MKD"},
-      {en:"Jim Beam", de:"Jim Beam", mk:"Џим Бим", al:"Jim Beam", price:"500 MKD"},
-      {en:"Jameson", de:"Jameson", mk:"Џемсон", al:"Jameson", price:"400 MKD"},
-      {en:"JB", de:"JB", mk:"JB", al:"JB", price:"400 MKD"},
-      {en:"Chivas", de:"Chivas", mk:"Чивас", al:"Chivas", price:"500 MKD"},
-      {en:"Whiskey 1L", de:"Whiskey 1L", mk:"Виски 1Л", al:"Whiskey 1L", price:"12,000 MKD"},
-    ],
-    spirits: [
-      {en:"Smirnoff", de:"Smirnoff", mk:"Смирноф", al:"Smirnoff", price:"400 MKD"},
-      {en:"Gin", de:"Gin", mk:"Џин", al:"Gin", price:"400 MKD"},
-      {en:"Tequila", de:"Tequila", mk:"Текила", al:"Tequila", price:"250 MKD"},
-      {en:"Martini", de:"Martini", mk:"Мартини", al:"Martini", price:"400 MKD"},
-      {en:"Ouzo", de:"Ouzo", mk:"Узо", al:"Ouzo", price:"400 MKD"},
-      {en:"Jägermeister", de:"Jägermeister", mk:"Јегермајстер", al:"Jägermeister", price:"400 MKD"},
-    ],
-    cocktails: [
-      {en:"Cocktail", de:"Cocktail", mk:"Коктел", al:"Cocktail", price:"1,000 MKD"},
-    ]
-  },
-  shisha: {
-    shishaflavours: [
-      {en:"Bonnie N Clyde", de:"Bonnie N Clyde", mk:"Бони и Клајд", al:"Bonnie N Clyde", price:"1,200 MKD"},
-      {en:"Grape Mint", de:"Traube Minze", mk:"Грозје Мента", al:"Grape Mint", price:"1,200 MKD"},
-      {en:"Watermelon Punch", de:"Wassermelonen Punch", mk:"Диња Панче", al:"Watermelon Punch", price:"1,200 MKD"},
-      {en:"Albanian Gangster", de:"Albanian Gangster", mk:"Албански Гангстер", al:"Albanian Gangster", price:"1,200 MKD"},
-    ]
-  }
-};
-
-function showSubcategories(category){
-  currentCategory = category;
-  document.getElementById('home').style.display='none';
-  document.getElementById('beverages').style.display= category==='beverages'? 'grid':'none';
-  document.getElementById('items').style.display='none';
-}
-
-function showItems(subcategory, category){
-  currentCategory = category; currentSubcategory = subcategory;
-  document.getElementById('home').style.display='none';
-  document.getElementById('beverages').style.display='none';
-  document.getElementById('items').style.display='block';
-  const container = document.getElementById('items-container'); container.innerHTML='';
-  data[category][subcategory].forEach(item=>{
-    let price = item.price;
-    if(currentCurrency==='eur'){
-      const eur = (parseInt(item.price) / 61).toFixed(2);
-      price = eur + " EUR";
-    }
-    const div=document.createElement('div');
-    div.className='item';
-    div.innerHTML=`<span class="item-name" data-en="${item.en}" data-de="${item.de}" data-mk="${item.mk}" data-al="${item.al}">${item[currentLang]}</span><span class="price">${price}</span>`;
-    container.appendChild(div);
-  });
-}
-
-function goHome(){ document.getElementById('home').style.display='grid'; document.getElementById('beverages').style.display='none'; document.getElementById('items').style.display='none'; }
-function goBack(){ if(currentCategory==='beverages'){ document.getElementById('beverages').style.display='grid'; } else { document.getElementById('home').style.display='grid'; } document.getElementById('items').style.display='none'; }
-
 </script>
-
 </body>
 </html>
