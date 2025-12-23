@@ -134,12 +134,13 @@ const MKD_TO_EUR = 61;
 
 // Menu data with translations and prices
 const menuData = {
-  Beer: [
+   Beer: [
     {en:"Skopsko", de:"Skopsko", mk:"Скопско", al:"Skopsko", price:300},
     {en:"Tuborg", de:"Tuborg", mk:"Туборг", al:"Tuborg", price:300},
     {en:"Heineken", de:"Heineken", mk:"Хајнекен", al:"Heineken", price:400},
     {en:"Corona", de:"Corona", mk:"Корона", al:"Corona", price:400}
   ],
+
   Whiskey: [
     {en:"Jack Daniels", de:"Jack Daniels", mk:"Џек Денјелс", al:"Jack Daniels", bottle:500, liter:12000},
     {en:"Chivas Regal", de:"Chivas Regal", mk:"Чивас Ригал", al:"Chivas Regal", bottle:500, liter:12000},
@@ -147,49 +148,54 @@ const menuData = {
     {en:"Ballentines", de:"Ballentines", mk:"Балентинс", al:"Ballentines", bottle:400, liter:12000},
     {en:"Jameson", de:"Jameson", mk:"Џемсон", al:"Jameson", bottle:400, liter:12000},
     {en:"Stock", de:"Stock", mk:"Сток", al:"Stock", bottle:400, liter:12000},
-    {en:"Red Label", de:"Red Label", mk:"Ред Лейбл", al:"Red Label", price:15000},
-    {en:"Blue Label", de:"Blue Label", mk:"Блу Лейбл", al:"Blue Label", price:61000},
+    {en:"Red Label", de:"Red Label", mk:"Ред Лејбл", al:"Red Label", bottle:400, liter:15000},
+    {en:"Blue Label", de:"Blue Label", mk:"Блу Лејбл", al:"Blue Label", liter:61000},
     {en:"Badel Brendi", de:"Badel Brendi", mk:"Бадел Бренди", al:"Badel Brendi", bottle:400, liter:12000}
   ],
+
   Liquer: [
-    {en:"Beylis", de:"Beylis", mk:"Бејлис", al:"Beylis", bottle:400, liter:12000},
+    {en:"Beylis", de:"Baileys", mk:"Бејлис", al:"Beylis", bottle:400, liter:12000},
     {en:"Malibu", de:"Malibu", mk:"Малибу", al:"Malibu", bottle:400, liter:12000},
-    {en:"Jeggermeister", de:"Jeggermeister", mk:"Јегермајстер", al:"Jeggermeister", bottle:400, liter:12000}
+    {en:"Jeggermeister", de:"Jägermeister", mk:"Јегермајстер", al:"Jeggermeister", bottle:400, liter:12000}
   ],
+
   WhiteSpirits: [
     {en:"Smirnoff Ice", de:"Smirnoff Ice", mk:"Смирноф Ајс", al:"Smirnoff Ice", price:400},
     {en:"Smirnoff", de:"Smirnoff", mk:"Смирноф", al:"Smirnoff", bottle:500, liter:12000},
     {en:"Vigor", de:"Vigor", mk:"Вигор", al:"Vigor", bottle:500, liter:12000},
-    {en:"Grey Goose", de:"Grey Goose", mk:"Греј Гус", al:"Grey Goose", liter:24000},
+    {en:"Grey Goose", de:"Grey Goose", mk:"Греј Гус", al:"Grey Goose", bottle:800, liter:24000},
     {en:"Belvedere", de:"Belvedere", mk:"Белведере", al:"Belvedere", liter:30000},
     {en:"Bacardi", de:"Bacardi", mk:"Бакарди", al:"Bacardi", bottle:500, liter:12000},
     {en:"Bombay", de:"Bombay", mk:"Бомбеј", al:"Bombay", bottle:500, liter:12000},
     {en:"Gin Sax", de:"Gin Sax", mk:"Џин Сакс", al:"Gin Sax", bottle:500, liter:12000}
   ],
+
   Shots: [
     {en:"Tequila", de:"Tequila", mk:"Текила", al:"Tequila", bottle:250, liter:12000},
     {en:"Bomb 69", de:"Bomb 69", mk:"Бомб 69", al:"Bomb 69", price:400},
     {en:"Alien Brain", de:"Alien Brain", mk:"Алиен Бреин", al:"Alien Brain", price:400}
   ],
+
   Champagne: [
     {en:"Romer", de:"Romer", mk:"Ромер", al:"Romer", liter:12000},
-    {en:"Moet", de:"Moet", mk:"Моет", al:"Moet", liter:24000}
+    {en:"Moet", de:"Moët", mk:"Моет", al:"Moet", liter:24000}
   ],
+
   Wines: [
-    {en:"Alexandria Red Dry 0.75L", de:"Alexandria Red Dry", mk:"Александрија Црвено Сухо", al:"Alexandria Red Dry", bottle:400, liter:6000},
-    {en:"Alexandria White Dry 0.75L", de:"Alexandria White Dry", mk:"Александрија Бело Сухо", al:"Alexandria White Dry", bottle:400, liter:6000}
+    {en:"Alexandria Red Dry 0.75L", de:"Alexandria Rot Trocken", mk:"Александрија Црвено Суво", al:"Alexandria Red Dry", bottle:400, liter:6000},
+    {en:"Alexandria White Dry 0.75L", de:"Alexandria Weiß Trocken", mk:"Александрија Бело Суво", al:"Alexandria White Dry", bottle:400, liter:6000}
   ],
+
   SoftDrinks: [
     {en:"Water", de:"Wasser", mk:"Вода", al:"Water", price:300},
     {en:"Cola", de:"Cola", mk:"Кола", al:"Cola", price:300},
     {en:"Fanta", de:"Fanta", mk:"Фанта", al:"Fanta", price:300},
     {en:"Schwepps", de:"Schwepps", mk:"Швепс", al:"Schwepps", price:300},
     {en:"Ice Tea", de:"Eistee", mk:"Леден Чај", al:"Ice Tea", price:300},
-    {en:"Orange Juice", de:"Orangensaft", mk:"Сок од Портокал", al:"Orange Juice", price:300},
-    {en:"Red Bull", de:"Red Bull", mk:"Ред Бул", al:"Red Bull", price:500},
+    {en:"Orange Juice", de:"Orangensaft", mk:"Портокал", al:"Orange Juice", price:300},
     {en:"Sour Cherry", de:"Sauerkirsche", mk:"Вишна", al:"Sour Cherry", price:300},
-    {en:"Apple", de:"Apfel", mk:"Јаболко", al:"Apple", price:300},
-    {en:"Orange Juice", de:"Orangensaft", mk:"Портокалов Сок", al:"Orange Juice", price:300}
+    {en:"Apple Juice", de:"Apfelsaft", mk:"Јаболко", al:"Apple", price:300},
+    {en:"Red Bull", de:"Red Bull", mk:"Ред Бул", al:"Red Bull", price:500}
   ]
 };
 
