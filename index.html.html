@@ -208,8 +208,11 @@ Object.keys(menuData).forEach(cat=>{
   home.appendChild(div);
 });
 
-// Helper to round EUR prices
-function roundEUR(value){ return Math.ceil(value/10)*10; }
+// Helper to round EUR prices to nearest 5 or 10
+function roundEUR(value){
+  return Math.round(value / 5) * 5;
+}
+
 
 function showItems(category){
   currentCategory = category;
